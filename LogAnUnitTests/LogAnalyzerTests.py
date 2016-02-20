@@ -39,7 +39,7 @@ class LogAnalyzerTestCase(unittest.TestCase):
 
 	# Use constructor injection of stub
 	# Assume we now rely on FakeExtendMgr_2 to verify if the file exists and valid
-	# FakeExtendMgr2 is pure python class 
+	# FakeExtendMgr2 is pure python class
 	# This is what I wrote because python is weak-type language
 	# so it can still work without using inheratance
 	def test_IsValidLogFileName_BadExtension_ReturnFalse_2(self):

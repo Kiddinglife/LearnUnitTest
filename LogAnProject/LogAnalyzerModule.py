@@ -7,26 +7,34 @@ class LogAnalyzer_0(object):
 	def IsValidLogFileName(self, fileName):
 		return str(fileName).endswith('.sln')
 
+'''
 # However, when we have to interact with filesystem in the mut, we have to use mock
 # eg. new mut may look like this: 
 # def IsValidLogFileName(fileName):
 # read through the config file and return true if extension is supported in config file
-# So below are all about using stub of IExtensionMgr
+# So below are all about using indirection of mocks
+'''
+# 3.4.1 Extract the interface to allow replacing underlying implementation
+# read through the config file and return true if extension is supported in
+# config file
 class IExtensionMgr(object):
-	def IsValid(self,filename):
-		pass
+    def IsValid(self,filename):
+        return False
 
-class FileExtensionMgr(object):
-	def IsValid(self,filename):
-		return str(fileName).endswith('.sln') 
+class FileExtensionMgr(IExtensionMgr):
+    def IsValid(self,filename):
+        return str(fileName).endswith('.sln') 
 
+# ctor injection
 class LogAnalyzer_1(object):
-	def __init__(self, iExtensionMgr):
-		self.mIExtensionMgr = iExtensionMgr
+    def __init__(self, iExtensionMgr):
+        self.mIExtensionMgr = iExtensionMgr
 
-	def IsValidLogFileName(self, fileName):
-		self.mIExtensionMgr.IsValid(fileName)
+    def IsValidLogFileName(self, fileName):
+        ret = self.mIExtensionMgr.IsValid(fileName) and str(fileName).endswith('.sln')
+        return ret
 
+# getter/setter injection indirection
 class LogAnalyzer_2(object):
 	def __init__(self):
 		self.mIExtensionMgr = FileExtensionMgr()
