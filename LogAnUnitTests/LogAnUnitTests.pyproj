@@ -30,9 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="LogAnalyzerTests.py" />
-    <Compile Include="LogAnalyzerTests1.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
