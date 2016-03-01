@@ -65,7 +65,7 @@ class LogAnalyzer_StubInjectedViaCtor(object):
 
 		self.mIExtensionMgr.IsValid(fileName)
 		
-#Refered to "1.2.3.Inject stub impl via a setter"
+#Refered to "1.2.3.Inject stub impl via a setter and ggeter"
 class LogAnalyzer_2(object):
 	def __init__(self):
 		self.mIExtensionMgr = FileExtensionMgr_ConcreteImpl()
@@ -75,6 +75,9 @@ class LogAnalyzer_2(object):
 
 	def SetIExtensionMgr(self, ext):
 		self.mIExtensionMgr = ext
+		
+	def GetIExtensionMgr(self):
+		return self.mIExtensionMgr
 
 class ExtensionMgrFactory(object):
 	iExtMgr = None
