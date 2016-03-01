@@ -2,7 +2,7 @@
 #encoding: utf-8 
 
 import sys
-from LogAnProject.LogAnalyzerModule import *
+from LogAnalyzerModule import *
 import unittest
 
 
