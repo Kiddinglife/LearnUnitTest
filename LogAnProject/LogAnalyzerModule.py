@@ -1,6 +1,8 @@
 #!/usr/bin/env python 
 # encoding: utf-8 
 
+import unittest
+
 """
 the simplyest way to test return value 
 No needs to use stub
@@ -37,7 +39,10 @@ There two big types to inject fakes into MUT(Method Under Test):
                 
         1.2.4.Inject stub impl via parameter
 2.Test are performed on the class that inhetites from MUT (eg. assert(mut_child.dosomething(),true)
-  Extract and override
+    It is also known as Extract and override, which is is good to for sumulating inputs into your code under test
+    (in other words, return values from dependency). but it is cumbersome when you want t verify and check interactions 
+    that are coming out of the code under test int othe dependency (in other words, it is good to play stub but very bad to play mock)
+    
     2.1 use local virtual factory method to get instance of stub
         
 """
@@ -126,3 +131,70 @@ class TestableLogAnalyzer(LogAnalyzer_StubInjectedViaLocalFactoryMethod):
         self.mIExtensionMgr = iExtensionMgr
     def GetMgr(self):
         return self.mIExtensionMgr
+
+
+
+
+# cut means by class under test mut means by method under test
+class LogAnalyzerTestCase(unittest.TestCase):
+
+    # No stub used just simply perform the test
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_NoStub(self):
+        logAnalyzer0 = LogAnalyzer_0()
+        ret = logAnalyzer0.IsValidLogFileName('fn1.sl')
+        self.assertFalse(ret)
+    
+    # StubIjectedViaCtor 
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_StubIjectedViaCtor(self):
+        ext = ExtendMgrStub()
+        ext.mWillBeValid = False
+        logAnalyzer = LogAnalyzer_StubInjectedViaCtor(ext)
+        ret = logAnalyzer.IsValidLogFileName('fn1.sl')
+        self.assertFalse(ret)
+
+    # StubIjectedViaCtor
+    # This is what I wrote because python is weak-type language
+    # so it can still work without using inheratance
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_StubIjectedViaCtor_WithoutInhertingFrom_ExtensionMgr_AbstractedInterface(self):
+        ext = ExtendMgrStub_WithoutIngeritingFrom_ExtensionMgr_AbstractedInterface()
+        ext.mWillBeValid = False
+
+        logAnalyzer = LogAnalyzer_StubInjectedViaCtor(ext)
+        ret = logAnalyzer.IsValidLogFileName('fn1.sl')
+
+        self.assertFalse(ret)
+    
+    # StubInjectedViaPropertySetter
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_StubInjectedViaPropertySetter(self):
+        ext = ExtendMgrStub()
+        ext.mWillBeValid = False
+
+        logAnalyzer = LogAnalyzer_StubInjectedViaPropertySetter()
+        logAnalyzer.SetIExtensionMgr(ext)
+        ret = logAnalyzer.IsValidLogFileName('fn1.sl')
+
+        self.assertFalse(ret)
+
+    # StubIjectedViaFactory
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_4_StubIjectedViaFactory(self):
+        ext = ExtendMgrStub()
+        ext.mWillBeValid = False
+        ExtensionMgrFactory.SetExtMgr(ext)
+
+        logAnalyzer = LogAnalyzer_StubInjectedViaFactory()
+        ret = logAnalyzer.IsValidLogFileName('fn1.sl')
+
+        self.assertFalse(ret)
+        
+    # StubIjectedViaLocalFactoryMethod
+    def test_IsValidLogFileName_BadExtension_ReturnFalse_4_StubIjectedViaLocalFactoryMethod(self):
+        ext = ExtendMgrStub()
+        ext.mWillBeValid = False
+        
+        testableLogAnalyzer = TestableLogAnalyzer(ext)
+        ret = testableLogAnalyzer.IsValidLogFileName('fnl.sl')
+        
+        self.assertFalse(ret)
+        
+if __name__ == '__main__': 
+    unittest.main()
